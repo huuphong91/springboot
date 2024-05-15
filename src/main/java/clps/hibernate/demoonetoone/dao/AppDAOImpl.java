@@ -1,6 +1,7 @@
 package clps.hibernate.demoonetoone.dao;
 
 import clps.hibernate.demoonetoone.entity.Instructor;
+import clps.hibernate.demoonetoone.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,6 @@ public class AppDAOImpl implements AppDAO {
     public AppDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 
 
     @Override
@@ -32,5 +32,21 @@ public class AppDAOImpl implements AppDAO {
     public void deleteById(int theId) {
         Instructor tempInstructor = entityManager.find(Instructor.class, theId);
         entityManager.remove(tempInstructor);
+    }
+
+    @Override
+    public InstructorDetail findInstructorDetailById(int theId) {
+        return entityManager.find(InstructorDetail.class, theId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteInstructorDetailById(int theId) {
+        InstructorDetail tempInstructorDetail = entityManager.find(InstructorDetail.class, theId);
+
+        // case break bi-directional link
+        // tempInstructorDetail.getInstructor().setInstructorDetail(null);
+
+        entityManager.remove(tempInstructorDetail);
     }
 }
