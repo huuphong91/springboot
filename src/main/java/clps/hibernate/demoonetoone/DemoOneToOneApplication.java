@@ -1,10 +1,7 @@
 package clps.hibernate.demoonetoone;
 
 import clps.hibernate.demoonetoone.dao.AppDAO;
-import clps.hibernate.demoonetoone.entity.Course;
-import clps.hibernate.demoonetoone.entity.Instructor;
-import clps.hibernate.demoonetoone.entity.InstructorDetail;
-import clps.hibernate.demoonetoone.entity.Review;
+import clps.hibernate.demoonetoone.entity.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,19 +12,87 @@ import java.util.List;
 @SpringBootApplication
 public class DemoOneToOneApplication {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(DemoOneToOneApplication.class, args);
     }
 
 
     @Bean
-    public CommandLineRunner commandLineRunner(AppDAO appDAO) {
-        return runner -> {
-            deleteCourseAndReviews(appDAO);
-        };
+    public CommandLineRunner commandLineRunner(final AppDAO appDAO) {
+        return runner -> deleteStudent(appDAO);
     }
 
-    private void deleteCourseAndReviews(AppDAO appDAO) {
+    private void deleteStudent(final AppDAO appDAO) {
+        int theId = 1;
+
+        appDAO.deleteStudentById(theId);
+    }
+
+    private void deleteCourse(final AppDAO appDAO) {
+        int theId = 10;
+
+        appDAO.deleteCourseById(theId);
+    }
+
+    private void addMoreCoursesForStuden(final AppDAO appDAO) {
+        int theId = 1;
+
+        Student tempStudent = appDAO.findStudentAndCourseByStudentId(theId);
+
+        System.out.println("Student: " + tempStudent);
+        System.out.println("Courses: " + tempStudent.getCourses());
+
+        // add more courses to student
+        Course tempCourse1 = new Course("Rubik's Cube - How To Speed Cube");
+        Course tempCourse2 = new Course("Atari 2600 - Game Development");
+
+        // add student to courses
+        tempStudent.addCourse(tempCourse1);
+        tempStudent.addCourse(tempCourse2);
+
+        appDAO.update(tempStudent);
+
+        System.out.println("Done!");
+    }
+
+    private void findStudenAndCourses(final AppDAO appDAO) {
+        int theId = 1;
+
+        Student tempStudent = appDAO.findStudentAndCourseByStudentId(theId);
+
+        System.out.println("Student: " + tempStudent);
+        System.out.println("Courses: " + tempStudent.getCourses());
+    }
+
+    private void findCourseAndStudents(final AppDAO appDAO) {
+        int theId = 10;
+
+        Course tempCourse = appDAO.findCourseAndStudentByCourseId(theId);
+
+        System.out.println("Course: " + tempCourse);
+        System.out.println("Students: " + tempCourse.getStudents());
+    }
+
+    private void createCourseAndStudents(final AppDAO appDAO) {
+        // create a course
+        Course tempCourse = new Course("Pacman - How To Score One Million Points");
+
+        // add some students
+        tempCourse.addStudent(new Student("John", "Doe", "dfdf@gmail.com"));
+        tempCourse.addStudent(new Student("MMMM", "MMMM", "dfdddff@gmail.com"));
+        tempCourse.addStudent(new Student("BBBB", "BBBB", "dfddfdfdf@gmail.com"));
+
+        // print course students
+        System.out.println("Saving the course: " + tempCourse);
+        System.out.println("Saving the students: " + tempCourse.getStudents());
+
+        // save the course ... and leverage the cascade all :-)
+        appDAO.save(tempCourse);
+
+        System.out.println("Done!");
+    }
+
+    private void deleteCourseAndReviews(final AppDAO appDAO) {
         int theId = 10;
 
         Course tempCourse = appDAO.findCourseAndReviewsByCourseId(theId);
@@ -35,7 +100,7 @@ public class DemoOneToOneApplication {
         appDAO.deleteCourseById(theId);
     }
 
-    private void retrieveCourseAndReviews(AppDAO appDAO) {
+    private void retrieveCourseAndReviews(final AppDAO appDAO) {
         int theId = 10;
 
         Course tempCourse = appDAO.findCourseAndReviewsByCourseId(theId);
@@ -44,7 +109,7 @@ public class DemoOneToOneApplication {
         System.out.println("Reviews: " + tempCourse.getReviews());
     }
 
-    private void createCourseAndReviews(AppDAO appDAO) {
+    private void createCourseAndReviews(final AppDAO appDAO) {
         // create a course
         Course tempCourse = new Course("Pacman - How To Score One Million Points");
 
@@ -60,20 +125,20 @@ public class DemoOneToOneApplication {
         System.out.println("Done!");
     }
 
-    private void deleteCourseById(AppDAO appDAO) {
+    private void deleteCourseById(final AppDAO appDAO) {
         int theId = 10;
 
         appDAO.deleteCourseById(theId);
     }
 
-    private void deleteInstructorById(AppDAO appDAO) {
+    private void deleteInstructorById(final AppDAO appDAO) {
         int theId = 1;
 
         appDAO.deleteInstructorById(theId);
     }
 
 
-    private void updateCourse(AppDAO appDAO) {
+    private void updateCourse(final AppDAO appDAO) {
         int theId = 10;
 
         Course tempCourse = appDAO.findCourseById(theId);
@@ -83,7 +148,7 @@ public class DemoOneToOneApplication {
         appDAO.updateCourse(tempCourse);
     }
 
-    private void updateInstructor(AppDAO appDAO) {
+    private void updateInstructor(final AppDAO appDAO) {
         int theId = 1;
 
         Instructor tempInstructor = appDAO.findById(theId);
@@ -93,7 +158,7 @@ public class DemoOneToOneApplication {
         appDAO.updateInstructor(tempInstructor);
     }
 
-    private void findInstructorByIdJoinFetch(AppDAO appDAO) {
+    private void findInstructorByIdJoinFetch(final AppDAO appDAO) {
         int theId = 1;
 
         Instructor tempInstructor = appDAO.findInstructorByIdJoinFetch(theId);
@@ -103,7 +168,7 @@ public class DemoOneToOneApplication {
         System.out.println("Found courses: " + tempInstructor.getCourses());
     }
 
-    private void findCoursesForInstructor(AppDAO appDAO) {
+    private void findCoursesForInstructor(final AppDAO appDAO) {
         int theId = 1;
 
         Instructor tempInstructor = appDAO.findById(theId);
@@ -118,7 +183,7 @@ public class DemoOneToOneApplication {
         System.out.println("Found courses: " + tempInstructor.getCourses());
     }
 
-    private void findInstructorWithCourses(AppDAO appDAO) {
+    private void findInstructorWithCourses(final AppDAO appDAO) {
         int theId = 1;
 
         Instructor tempInstructor = appDAO.findById(theId);
@@ -128,7 +193,7 @@ public class DemoOneToOneApplication {
         System.out.println("Found courses: " + tempInstructor.getCourses());
     }
 
-    private void createInstructorWithCourses(AppDAO appDAO) {
+    private void createInstructorWithCourses(final AppDAO appDAO) {
         // create the instructor
         Instructor tempInstructor = new Instructor("Chad", "Darby", "huuphong91@gmail.com");
 
@@ -150,13 +215,13 @@ public class DemoOneToOneApplication {
         appDAO.save(tempInstructor);
     }
 
-    private void deleteInstructorDetail(AppDAO appDAO) {
+    private void deleteInstructorDetail(final AppDAO appDAO) {
         int theId = 2;
 
         appDAO.deleteInstructorDetailById(theId);
     }
 
-    private void findInstructorDetail(AppDAO appDAO) {
+    private void findInstructorDetail(final AppDAO appDAO) {
         int theId = 2;
 
         InstructorDetail tempInstructorDetail = appDAO.findInstructorDetailById(theId);
@@ -165,13 +230,13 @@ public class DemoOneToOneApplication {
         System.out.println("Found instructor: " + tempInstructorDetail.getInstructor());
     }
 
-    private void deleteInstructor(AppDAO appDAO) {
+    private void deleteInstructor(final AppDAO appDAO) {
         int theId = 1;
 
         appDAO.deleteById(theId);
     }
 
-    private void findInstructor(AppDAO appDAO) {
+    private void findInstructor(final AppDAO appDAO) {
         int theId = 1;
 
         Instructor tempInstructor = appDAO.findById(theId);
@@ -180,7 +245,7 @@ public class DemoOneToOneApplication {
         System.out.println("Found instructor detail: " + tempInstructor.getInstructorDetail());
     }
 
-    private void createInstructor(AppDAO appDAO) {
+    private void createInstructor(final AppDAO appDAO) {
 
         // create the instructor
         Instructor tempInstructor = new Instructor("Chad", "Darby", "huuphong91@gmail.com");

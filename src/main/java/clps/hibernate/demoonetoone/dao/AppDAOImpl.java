@@ -3,6 +3,7 @@ package clps.hibernate.demoonetoone.dao;
 import clps.hibernate.demoonetoone.entity.Course;
 import clps.hibernate.demoonetoone.entity.Instructor;
 import clps.hibernate.demoonetoone.entity.InstructorDetail;
+import clps.hibernate.demoonetoone.entity.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -128,5 +129,37 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         return query.getSingleResult();
+    }
+
+    @Override
+    public Course findCourseAndStudentByCourseId(int theId) {
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c JOIN FETCH c.students where c.id=:data", Course.class);
+
+        query.setParameter("data", theId);
+
+        return query.getSingleResult();
+    }
+
+    @Override
+    public Student findStudentAndCourseByStudentId(int theId) {
+        TypedQuery<Student> query = entityManager.createQuery("select s from Student s JOIN FETCH s.courses where s.id=:data", Student.class);
+
+        query.setParameter("data", theId);
+
+        return query.getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public void update(Student theStudent) {
+        entityManager.merge(theStudent);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudentById(int theId) {
+        Student tempStudent = entityManager.find(Student.class, theId);
+
+        entityManager.remove(tempStudent);
     }
 }

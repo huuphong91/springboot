@@ -3,6 +3,7 @@ package clps.hibernate.demoonetoone.dao;
 import clps.hibernate.demoonetoone.entity.Course;
 import clps.hibernate.demoonetoone.entity.Instructor;
 import clps.hibernate.demoonetoone.entity.InstructorDetail;
+import clps.hibernate.demoonetoone.entity.Student;
 
 import java.util.List;
 
@@ -35,4 +36,12 @@ public interface AppDAO {
     void save(Course theCourse);
 
     Course findCourseAndReviewsByCourseId(int theId);
+
+    Course findCourseAndStudentByCourseId(int theId);
+
+    Student findStudentAndCourseByStudentId(int theId);
+
+    void update(Student theStudent);
+
+    void deleteStudentById(int theId);
 }
